@@ -17,8 +17,10 @@ var config = {
 };
 
 var player;
+var player2;
 var stars;
 var bombs;
+var bullets;
 var platforms;
 var cursors;
 var score = 0;
@@ -38,6 +40,46 @@ function preload ()
 
 function create ()
 {
+  var Bullet = new Phaser.Class({
+    Extends: Phaser.GameObjects.Image,
+
+    initialize: 
+
+    function Bullet(scene) {
+      Phaser.GameObjects.Image.call(this, scene, 0, 0, 'star');
+      this.speed = Phaser.Math.GetSpeed(400, 1);
+    }, 
+
+    fire: function(x, y, scene) {
+      this.setPosition(x, y);
+
+      this.setActive(true);
+      this.setVisible(true);
+    },
+
+    update: function(time, delta) {
+      this.x += this.speed * delta;
+
+      if (this.x >  800) {
+        this.setActive(false);
+        this.setVisible(false);
+      }
+
+      if ((this.x > player2.x) && (this.x < player2.x + player2.width)) {
+        this.setActive(false);
+        this.setVisible(false);
+      }
+    }
+  });
+
+  bullets = this.add.group({
+       classType: Bullet,
+       maxSize: 100,
+       runChildUpdate: true
+  });
+
+  
+
   //  A simple background for our game
   this.add.image(400, 300, 'sky');
 
@@ -59,6 +101,12 @@ function create ()
   //  Player physics properties. Give the little guy a slight bounce.
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
+
+    //dummy
+  player2 = this.physics.add.sprite(400, 450, 'dude');
+
+  player2.setBounce(0.2);
+  player2.setCollideWorldBounds(true);
 
   //  Our player animations, turning, walking left and walking right.
   this.anims.create({
@@ -107,6 +155,7 @@ function create ()
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(stars, platforms);
   this.physics.add.collider(bombs, platforms);
+  this.physics.add.collider(player2, platforms);
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
   this.physics.add.overlap(player, stars, collectStar, null, this);
@@ -143,6 +192,11 @@ function update ()
   if (cursors.up.isDown && player.body.touching.down)
   {
     player.setVelocityY(-330);
+  }
+
+  if (cursors.down.isDown) {
+    var bullet = bullets.get();
+    bullet.fire(player.x, player.y, this);
   }
 }
 

@@ -24,6 +24,8 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
+//enemy is temporary
+var enemy
 
 var game = new Phaser.Game(config);
 
@@ -94,6 +96,51 @@ function create ()
     frameRate: 10,
   });
 
+  //this is temp to test the projectiles
+  enemy = this.physics.add.sprite(400, 450, 'dude');
+
+  enemy.setBounce(0.2);
+  enemy.setCollideWorldBounds(true);
+
+  //bullets,  projectiles
+    var Bullet = new Phaser.Class({
+    Extends: Phaser.GameObjects.Image,
+
+    initialize: 
+
+    function Bullet(scene) {
+      Phaser.GameObjects.Image.call(this, scene, 0, 0, 'star');
+      this.speed = Phaser.Math.GetSpeed(400, 1);
+    }, 
+
+    fire: function(x, y) {
+      this.setPosition(x, y);
+
+      this.setActive(true);
+      this.setVisible(true);
+    },
+
+    update: function(time, delta) {
+      this.x += this.speed * delta;
+
+      if (this.x >  800) {
+        this.setActive(false);
+        this.setVisible(false);
+      }
+
+      if ((this.x > enemy.x) && (this.x < enemy.x + enemy.width)) {
+        this.setActive(false);
+        this.setVisible(false);
+      }
+    }
+  });
+
+  bullets = this.add.group({
+       classType: Bullet,
+       maxSize: 100,
+       runChildUpdate: true
+  });
+
   //  Input Events
   cursors = this.input.keyboard.createCursorKeys();
 
@@ -120,6 +167,8 @@ function create ()
   this.physics.add.collider(player, platforms);
   this.physics.add.collider(stars, platforms);
   this.physics.add.collider(bombs, platforms);
+  //temp
+  this.physics.add.collider(enemy, platforms);
 
   //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
   this.physics.add.overlap(player, stars, collectStar, null, this);
@@ -128,6 +177,7 @@ function create ()
 
   // define custom keys
   this.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+  this.Shoot =  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
 }
 
 function update ()
@@ -168,6 +218,11 @@ function update ()
   {
     player.setVelocityY(-330);
   }
+  
+  if (this.Shoot.isDown) {
+    var bullet = bullets.get();
+    bullet.fire(player.x, player.y);
+  } 
 }
 
 function collectStar (player, star)
