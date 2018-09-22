@@ -34,6 +34,7 @@ function preload ()
   this.load.image('star', 'assets/star.png');
   this.load.image('bomb', 'assets/bomb.png');
   this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+  this.load.spritesheet('dudeSword', 'assets/dude_sword.png', { frameWidth: 32, frameHeight: 48 });
 }
 
 function create ()
@@ -81,6 +82,18 @@ function create ()
     repeat: -1
   });
 
+  this.anims.create({
+    key: 'melee_right',
+    frames: [ { key: 'dudeSword', frame: 6 } ],
+    frameRate: 10,
+  });
+
+  this.anims.create({
+    key: 'melee_left',
+    frames: [ { key: 'dudeSword', frame: 3 } ],
+    frameRate: 10,
+  });
+
   //  Input Events
   cursors = this.input.keyboard.createCursorKeys();
 
@@ -112,6 +125,9 @@ function create ()
   this.physics.add.overlap(player, stars, collectStar, null, this);
 
   this.physics.add.collider(player, bombs, hitBomb, null, this);
+
+  // define custom keys
+  this.A = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
 }
 
 function update ()
@@ -125,13 +141,21 @@ function update ()
   {
     player.setVelocityX(-160);
 
-    player.anims.play('left', true);
+    if (this.A.isDown) {
+      player.anims.play('melee_left');
+    } else {
+      player.anims.play('left', true);
+    }
   }
   else if (cursors.right.isDown)
   {
     player.setVelocityX(160);
 
-    player.anims.play('right', true);
+    if (this.A.isDown) {
+      player.anims.play('melee_right');
+    } else {
+      player.anims.play('right', true);
+    }
   }
   else
   {
