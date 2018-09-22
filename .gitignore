@@ -1,0 +1,10 @@
+# parcel
+*.log
+.cache/
+dist/
+
+# npm
+node_modules/
+
+# text editors/ides
+.vscode
