@@ -1,29 +1,25 @@
 
-import GameScene from './scenes/game';
+import Game from './game';
+import Splash from './splash';
 
-const config = {
+var config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: {
-        y: 200
-      },
+      gravity: { y: 300 },
       debug: false
     }
   },
-  scene: [GameScene]
+  scene: [Splash, Game]
 };
-
-// console.log(Phaser);
-// Phaser.PluginManager.add('Weapon');
 
 new Phaser.Game(config);
 
 if (module.hot) {
-  module.hot.accept(() => {});
+  module.hot.accept(() => { });
 
   module.hot.dispose(() => {
     window.location.reload();
