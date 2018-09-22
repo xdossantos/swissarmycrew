@@ -1,6 +1,6 @@
 var config = {
   type: Phaser.AUTO,
-  width: 800,
+  width: 1032,
   height: 600,
   physics: {
     default: 'arcade',
@@ -97,6 +97,14 @@ function create ()
     child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
 
   });
+
+  // set bounds so the camera won't go outside the game world
+  this.cameras.main.setBounds(0, 0, '1032px', '600px');
+  // make the camera follow the player
+  this.cameras.main.startFollow(player);
+
+  // set background color, so the sky is not black
+  this.cameras.main.setBackgroundColor('#ccccff');
 
   bombs = this.physics.add.group();
 
