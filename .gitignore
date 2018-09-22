@@ -1,6 +1,7 @@
 # parcel
 *.log
 .cache/
+.idea/
 dist/
 
 # npm
