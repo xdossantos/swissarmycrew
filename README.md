@@ -10,13 +10,18 @@ A 2d side-scrolling platform game built using the javascript library Phaser.
 
 ## Running locally
 
-1. Install the required dependencies
+1. Clone the repository
+```bash
+git clone git@github.com:xdossantos/swissarmycrew.git
+```
+
+2. Install the required dependencies
 
 ```bash
 npm install
 ```
 
-2. Run the dev server
+3. Run the dev server
 
 ```bash
 npm start
