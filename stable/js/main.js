@@ -27,6 +27,7 @@ var scoreText;
 //enemy is temporary
 var enemy;
 var Vx;
+var lastShot = 0;
 
 var game = new Phaser.Game(config);
 
@@ -114,22 +115,24 @@ function create ()
       this.speed = Phaser.Math.GetSpeed(400, 1);
     }, 
 
-    fire: function(x, y, playerVelocity) {
+    fire: function(x, y, playerVelocity, lastShot) {
       this.setPosition(x, y);
-      if (playerVelocity < 0) {
-        this.speed = Phaser.Math.GetSpeed(-400, 1);
-      }
-      else {
-        this.speed = Phaser.Math.GetSpeed(400, 1);  
-      };
-      this.setActive(true);
-      this.setVisible(true);
+      //if ((Phaser.time - 1) > lastShot) {
+        if (playerVelocity < 0) {
+          this.speed = Phaser.Math.GetSpeed(-400, 1);
+        }
+        else {
+          this.speed = Phaser.Math.GetSpeed(400, 1);  
+        };
+        this.setActive(true);
+        this.setVisible(true);
+      //}
     },
 
     update: function(time, delta) {
       this.x += this.speed * delta;
 
-      if (this.x >  800) {
+      if ((this.x >  800) || (this.x < 0)) {
         this.setActive(false);
         this.setVisible(false);
       }
@@ -146,7 +149,7 @@ function create ()
 
   bullets = this.add.group({
        classType: Bullet,
-       maxSize: 100,
+       maxSize: 10,
        runChildUpdate: true
   });
 
@@ -230,8 +233,12 @@ function update ()
   
   if (this.Shoot.isDown) {
     var bullet = bullets.get();
-    bullet.fire(player.x, player.y, Vx);
-  } 
+
+    if (bullet) {
+      bullet.fire(player.x, player.y, Vx, lastShot);
+      //lastShot = Phaser.time; 
+    }
+  }
 }
 
 function collectStar (player, star)
