@@ -1,12 +1,20 @@
 import Phaser from 'phaser';
+import splash from '../assets/splash.png'
 
 export default class Splash extends Phaser.Scene {
     constructor() {
-        super({ key: 'Slash' });
+        super({ key: 'Splash' });
     }
 
+    preload() {
+        this.load.image('splash', splash );
+
+    }
+
+
     create() {
-        this.text = this.add.text(0, 0, "Welcome to Inkumbulo!", { font: "40px Impact" });
+        this.add.image(400, 300, 'splash');
+     
         this.ENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
     }
 
