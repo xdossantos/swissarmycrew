@@ -25,7 +25,8 @@ var score = 0;
 var gameOver = false;
 var scoreText;
 //enemy is temporary
-var enemy
+var enemy;
+var Vx;
 
 var game = new Phaser.Game(config);
 
@@ -97,9 +98,9 @@ function create ()
   });
 
   //this is temp to test the projectiles
-  enemy = this.physics.add.sprite(400, 450, 'dude');
+  enemy = this.physics.add.sprite(400, 512, 'dude');
 
-  enemy.setBounce(0.2);
+  enemy.setBounce(0);
   enemy.setCollideWorldBounds(true);
 
   //bullets,  projectiles
@@ -113,9 +114,14 @@ function create ()
       this.speed = Phaser.Math.GetSpeed(400, 1);
     }, 
 
-    fire: function(x, y) {
+    fire: function(x, y, playerVelocity) {
       this.setPosition(x, y);
-
+      if (playerVelocity < 0) {
+        this.speed = Phaser.Math.GetSpeed(-400, 1);
+      }
+      else {
+        this.speed = Phaser.Math.GetSpeed(400, 1);  
+      };
       this.setActive(true);
       this.setVisible(true);
     },
@@ -127,8 +133,11 @@ function create ()
         this.setActive(false);
         this.setVisible(false);
       }
-
-      if ((this.x > enemy.x) && (this.x < enemy.x + enemy.width)) {
+      //x2:1 < x1:1 < x2:2 or x2:1 < x1:2 < x2:2 and
+      //y2:1 < y1:1 < y2:2 or y2:1 < y1:2 < y2:2 
+      if ((((enemy.x < this.x) && (this.x < (enemy.x + enemy.width))) || ((enemy.x < (this.x + this.width)) && ((this.x + this.width) < (enemy.x + enemy.width)))) 
+        && 
+          (((enemy.y < this.y) && (this.y < (enemy.y + enemy.height))) || ((enemy.y < (this.y + this.height)) && ((this.y + this.height) < (enemy.y + enemy.height))))) {
         this.setActive(false);
         this.setVisible(false);
       }
@@ -190,7 +199,7 @@ function update ()
   if (cursors.left.isDown)
   {
     player.setVelocityX(-160);
-
+    Vx = -1;
     if (this.A.isDown) {
       player.anims.play('melee_left');
     } else {
@@ -200,7 +209,7 @@ function update ()
   else if (cursors.right.isDown)
   {
     player.setVelocityX(160);
-
+    Vx = 1;
     if (this.A.isDown) {
       player.anims.play('melee_right');
     } else {
@@ -221,7 +230,7 @@ function update ()
   
   if (this.Shoot.isDown) {
     var bullet = bullets.get();
-    bullet.fire(player.x, player.y);
+    bullet.fire(player.x, player.y, Vx);
   } 
 }
 
