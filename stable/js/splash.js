@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import splash from '../assets/splash.png';
-import intromusic from '../assets/intro.mp3';
+import intromusic from '../assets/sound/intro.mp3';
 
 export default class Splash extends Phaser.Scene {
     constructor() {
