@@ -6,6 +6,7 @@ import star from '../assets/star.png';
 import bomb from '../assets/bomb.png';
 import dude from '../assets/dude.png';
 import dudeSword from '../assets/dude_sword.png';
+//import stairs_2 from '../assets/stairs.png';
 
 var player;
 var stars;
@@ -20,6 +21,7 @@ var enemy;
 var Vx;
 var lastShot = 0;
 var bullets;
+//var staircases;
 
 export default class Main extends Phaser.Scene {
   constructor() {
@@ -33,6 +35,7 @@ export default class Main extends Phaser.Scene {
     this.load.image('bomb', bomb);
     this.load.spritesheet('dude', dude, { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('dudeSword', dudeSword, { frameWidth: 32, frameHeight: 48 });
+    //this.load.image('stairs_2', stairs_2);
   }
 
   create () {
@@ -51,6 +54,36 @@ export default class Main extends Phaser.Scene {
     platforms.create(600, 400, 'ground');
     platforms.create(50, 250, 'ground');
     platforms.create(750, 220, 'ground');
+
+    //Used for going up stairs
+    /*var Staircase = new Phaser.Class({
+      Extends: Phaser.GameObjects.Image, 
+
+      initialize: function staircase(scene, x, y) {
+        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'stairs_2');
+        this.setPosition(x, y);
+        this.setActive(true);
+        this.setVisible(true);
+      },
+
+      update: function(time, delta) {
+        if ((player.x > this.x) && (player.x < this.x + this.width)) {
+          var xO = this.x - this.width * 0.5;
+          var yO = this.y + this.height * 0.5;
+
+          player.y = yO -(player.x - xO);
+          player.body.allowGravity = false;      
+        }
+      }
+    });
+
+    staircases = this.add.group({
+      classType: Staircase,
+      maxSize: 10,
+      runChildUpdate: true
+    });
+
+    staircases.create(500, 500); */
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'dude');
@@ -151,12 +184,8 @@ export default class Main extends Phaser.Scene {
     //  Input Events
     cursors = this.input.keyboard.createCursorKeys();
 
-    //var cam = this.cameras.add(0, 0, 1600, 600);
-    //cam.setBounds(0, 0, 3200, 600);
-    //cam.startFollow(player);
-
     //this.cameras.add(0, 0, 1600, 600);
-    this.cameras.main.setBounds(0, 0, 3200, 600);
+    this.cameras.main.setBounds(0, 0, 2400, 1200);
     this.cameras.main.startFollow(player); 
     this.cameras.main.setSize(1200, 600);    
 
@@ -178,7 +207,6 @@ export default class Main extends Phaser.Scene {
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
@@ -242,7 +270,8 @@ export default class Main extends Phaser.Scene {
         bullet.fire(player.x, player.y, Vx, lastShot);
         //lastShot = Phaser.time; 
       }
-    }    
+    }
+
   }
 
   collectStar (player, star)
