@@ -319,12 +319,14 @@ export default class Main extends Phaser.Scene {
   }
 
   hitBomb (player, bomb) {
-    this.physics.pause();
+    if (bomb.Active) {
+      this.physics.pause();
 
-    player.setTint(0xff0000);
+      player.setTint(0xff0000);
 
-    player.anims.play('turn');
+      player.anims.play('turn');
 
-    gameOver = true;
+      gameOver = true;
+    }
   }
 }
