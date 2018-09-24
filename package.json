@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "phaser": "^3.13.0"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.9.7"
+  },
+  "scripts": {
+    "start": "parcel --port=$PORT stable/index.html",
+    "dev": "parcel stable/index.html --open"
+  }
+}
