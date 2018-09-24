@@ -6,6 +6,7 @@ import star from '../assets/star.png';
 import bomb from '../assets/bomb.png';
 import dude from '../assets/dude.png';
 import dudeSword from '../assets/dude_sword.png';
+import fidgetSpinner from '../assets/fidget.png';
 //import stairs_2 from '../assets/stairs.png';
 
 var player;
@@ -16,11 +17,11 @@ var cursors;
 var score = 0;
 var gameOver = false;
 var scoreText;
-//enemy is temporary
-var enemy;
+var enemy = false;
 var Vx;
 var lastShot = 0;
 var bullets;
+var arrObjectsBulletCollide = [];
 //var staircases;
 
 export default class Main extends Phaser.Scene {
@@ -33,6 +34,7 @@ export default class Main extends Phaser.Scene {
     this.load.image('ground', ground);
     this.load.image('star', star);
     this.load.image('bomb', bomb);
+    this.load.image('fidgetSpinner', fidgetSpinner);
     this.load.spritesheet('dude', dude, { frameWidth: 32, frameHeight: 48 });
     this.load.spritesheet('dudeSword', dudeSword, { frameWidth: 32, frameHeight: 48 });
     //this.load.image('stairs_2', stairs_2);
@@ -45,6 +47,7 @@ export default class Main extends Phaser.Scene {
 
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = this.physics.add.staticGroup();
+    arrObjectsBulletCollide[0] = [platforms]; 
 
     //  Here we create the ground.
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
@@ -124,12 +127,6 @@ export default class Main extends Phaser.Scene {
       frames: [ { key: 'dudeSword', frame: 3 } ],
       frameRate: 10,
     });
-    
-    //this is temp to test the projectiles
-    enemy = this.physics.add.sprite(400, 512, 'dude');
-
-    enemy.setBounce(0);
-    enemy.setCollideWorldBounds(true);
 
     //bullets,  projectiles
       var Bullet = new Phaser.Class({
@@ -138,13 +135,13 @@ export default class Main extends Phaser.Scene {
       initialize: 
 
       function Bullet(scene) {
-        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'star');
+        Phaser.GameObjects.Image.call(this, scene, 0, 0, 'fidgetSpinner');
         this.speed = Phaser.Math.GetSpeed(400, 1);
       }, 
 
       fire: function(x, y, playerVelocity, lastShot) {
         this.setPosition(x, y);
-        //if ((Phaser.time - 1) > lastShot) {
+        //if ((Phaser.time - 50) > lastShot) {
           if (playerVelocity < 0) {
             this.speed = Phaser.Math.GetSpeed(-400, 1);
           }
@@ -155,29 +152,50 @@ export default class Main extends Phaser.Scene {
           this.setVisible(true);
         //}
       },
-
       update: function(time, delta) {
         this.x += this.speed * delta;
+        this.rotation += 1;
 
-        if ((this.x >  800) || (this.x < 0)) {
+        if ((this.x >  2400) || (this.x < 0)) {
           this.setActive(false);
           this.setVisible(false);
         }
-        //x2:1 < x1:1 < x2:2 or x2:1 < x1:2 < x2:2 and
-        //y2:1 < y1:1 < y2:2 or y2:1 < y1:2 < y2:2 
-
-        if ((((enemy.x < this.x) && (this.x < (enemy.x + enemy.width))) || ((enemy.x < (this.x + this.width)) && ((this.x + this.width) < (enemy.x + enemy.width)))) 
-          && 
-            (((enemy.y < this.y) && (this.y < (enemy.y + enemy.height))) || ((enemy.y < (this.y + this.height)) && ((this.y + this.height) < (enemy.y + enemy.height))))) {
-          this.setActive(false);
-          this.setVisible(false);
+        var arrmax = 1;
+        if (enemy) {
+          arrmax = 0;
         }
+        for (var i = 0; i < arrObjectsBulletCollide.length - arrmax; i++) {
+          var arrTemp = [];
+          if (i === 0) {
+            arrTemp = arrObjectsBulletCollide[0][0].children;
+          }
+          if (i > 0) {
+            arrTemp = arrObjectsBulletCollide[i].children;
+          }
+          for (var j = 0; j < arrTemp.size; j++) {
+            var Obj = arrTemp.entries[j];
+            var x = Obj.x - Obj.width * 0.5;
+            var y = Obj.y - Obj.height * 0.5;
+            //x2:1 < x1:1 < x2:2 or x2:1 < x1:2 < x2:2 and
+            //y2:1 < y1:1 < y2:2 or y2:1 < y1:2 < y2:2 
+            if ((((x < this.x) && (this.x < (x + Obj.width))) || ((x < (this.x + this.width)) && ((this.x + this.width) < (x + Obj.width)))) 
+            && 
+                (((y < this.y) && (this.y < (y + Obj.height))) || ((y < (this.y + this.height)) && ((this.y + this.height) < (y + Obj.height))))) {
+              this.setActive(false);
+              this.setVisible(false);
+              if (i === 1) {
+                Obj.setActive(false);
+                Obj.setVisible(false);
+              }
+            }
+          };
+        };
       }
     });
 
     bullets = this.add.group({
          classType: Bullet,
-         maxSize: 10,
+         maxSize: 3,
          runChildUpdate: true
     });
 
@@ -204,6 +222,7 @@ export default class Main extends Phaser.Scene {
     });
 
     bombs = this.physics.add.group();
+    arrObjectsBulletCollide[1] = bombs;
 
     //  The score
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
@@ -212,8 +231,6 @@ export default class Main extends Phaser.Scene {
     this.physics.add.collider(player, platforms);
     this.physics.add.collider(stars, platforms);
     this.physics.add.collider(bombs, platforms);
-    //temp
-    this.physics.add.collider(enemy, platforms);  
 
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
     this.physics.add.overlap(player, stars, this.collectStar, null, this);
@@ -262,7 +279,6 @@ export default class Main extends Phaser.Scene {
     {
       player.setVelocityY(-330);
     }
-
     if (this.Shoot.isDown) {
       var bullet = bullets.get();
 
@@ -298,7 +314,7 @@ export default class Main extends Phaser.Scene {
       bomb.setCollideWorldBounds(true);
       bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
       bomb.allowGravity = false;
-
+      enemy = true;
     }
   }
 
