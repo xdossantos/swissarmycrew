@@ -4,8 +4,8 @@ import Splash from './splash';
 
 var config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 2400,
+  height: 1200,
   physics: {
     default: 'arcade',
     arcade: {
