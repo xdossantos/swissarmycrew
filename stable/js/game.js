@@ -225,9 +225,11 @@ export default class Main extends Phaser.Scene {
   }
 
   update () {
+    
     if (gameOver)
     {
-      return;
+      
+      return; 
     }
 
     if (cursors.left.isDown)
@@ -280,7 +282,7 @@ export default class Main extends Phaser.Scene {
 
     //  Add and update the score
     score += 10;
-    scoreText.setText('Score: ' + score);
+    scoreText.setText('Knowledge: ' + score);
 
     if (stars.countActive(true) === 0)
     {
@@ -303,6 +305,9 @@ export default class Main extends Phaser.Scene {
   }
 
   hitBomb (player, bomb) {
+    
+    scoreText.setText('Game Over. Refresh to play again. Points: ' + score);
+    
     this.physics.pause();
 
     player.setTint(0xff0000);
@@ -310,5 +315,7 @@ export default class Main extends Phaser.Scene {
     player.anims.play('turn');
 
     gameOver = true;
+
+    
   }
 }

@@ -15,7 +15,7 @@ export default class Splash extends Phaser.Scene {
 
 
     create() {
-        this.add.image(400, 300, 'splash');
+        this.add.image(1200, 600, 'splash');
         let introductionmusic = this.sound.add('intromusic')
         introductionmusic.play(); 
         this.ENTER = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
