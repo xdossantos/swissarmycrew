@@ -159,7 +159,7 @@ export default class Main extends Phaser.Scene {
       update: function(time, delta) {
         this.x += this.speed * delta;
 
-        if ((this.x >  800) || (this.x < 0)) {
+        if ((this.x >  2400) || (this.x < 0)) {
           this.setActive(false);
           this.setVisible(false);
         }
