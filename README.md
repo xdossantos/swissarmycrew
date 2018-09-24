@@ -29,4 +29,4 @@ npm start
 
 ### Note
 
-After starting up the dev server (the server is up once you see `✨  Built in ...` in the console), the game should automatically open up in a new tab in your default browser, if you don't have a default browser set, you can manually navigate to `http://localhost:1234`
+After starting up the dev server (the server is up once you see `✨  Built in ...` in the console), the game should automatically open up in a new tab in your default browser, if you don't have a default browser set, you can manually navigate to `http://localhost:1234`. Be sure to "CD stable" (make sure you are in the stable folder) when executing the npm start command 
