@@ -186,8 +186,8 @@ export default class Main extends Phaser.Scene {
 
     //this.cameras.add(0, 0, 1600, 600);
     this.cameras.main.setBounds(0, 0, 2400, 1200);
-    this.cameras.main.startFollow(player); 
-    this.cameras.main.setSize(1200, 600);    
+    this.cameras.main.startFollow(player);
+    this.cameras.main.setSize(window.screen.width, window.screen.height);    
 
     //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
     stars = this.physics.add.group({
