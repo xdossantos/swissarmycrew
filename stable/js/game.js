@@ -30,19 +30,20 @@ export default class Main extends Phaser.Scene {
   }
 
   preload() {
+    //TODO We need to add a preloader animation 
     this.load.image('sky', sky);
     this.load.image('ground', ground);
     this.load.image('star', star);
     this.load.image('bomb', bomb);
     this.load.image('fidgetSpinner', fidgetSpinner);
     this.load.spritesheet('dude', dude, { frameWidth: 32, frameHeight: 48 });
-    this.load.spritesheet('dudeSword', dudeSword, { frameWidth: 32, frameHeight: 48 });
+    //this.load.spritesheet('dudeSword', dudeSword, { frameWidth: 32, frameHeight: 48 });
     //this.load.image('stairs_2', stairs_2);
   }
 
   create () {
     //  A simple background for our game
-    this.add.image(400, 300, 'sky');
+    //this.add.image(400, 300, 'sky');
     this.add.image(1200, 300, 'sky');
 
     //  The platforms group contains the ground and the 2 ledges we can jump on
@@ -232,13 +233,13 @@ export default class Main extends Phaser.Scene {
     stars = this.physics.add.group({
       key: 'star',
       repeat: 11,
-      setXY: { x: 12, y: 0, stepX: 70 }
+      setXY: { x: 12, y: 0, stepX: 140 }
     });
 
     stars.children.iterate(function (child) {
 
       //  Give each star a slightly different bounce
-      child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+      child.setBounceY(Phaser.Math.FloatBetween(0.2, 0.4));
 
     });
 
@@ -246,7 +247,7 @@ export default class Main extends Phaser.Scene {
     arrObjectsBulletCollide[1] = bombs;
 
     //  The score
-    scoreText = this.add.text(600, 600, 'Funda!', { fontSize: '150px', fill: '#FFFFFF' });
+    scoreText = this.add.text(40, 40, 'Funda!', { fontSize: '75px', fill: '#FFFFFF' });
 
     //  Collide the player and the stars with the platforms
     this.physics.add.collider(player, platforms);
@@ -349,8 +350,9 @@ export default class Main extends Phaser.Scene {
       player.setTint(0xff0000);
 
       player.anims.play('turn');
-
+      //TODO: Kill game object 
       gameOver = true;
+      this.scene.start('Splash');
     
   }
 }

@@ -8,6 +8,7 @@ export default class Splash extends Phaser.Scene {
     }
 
     preload() {
+        // Preloader animation TODO develop and add animation 
         this.load.image('splash', splash );
         this.load.audio('intromusic', intromusic);
 
